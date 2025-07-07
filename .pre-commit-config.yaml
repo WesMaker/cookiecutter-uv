@@ -25,3 +25,43 @@ repos:
       - id: ruff-format
         args: [--config=pyproject.toml]
         exclude: ^{{cookiecutter.project_name}}
+
+  - repo: https://github.com/espressif/conventional-precommit-linter
+    rev: v1.7.0
+    hooks:
+      - id: conventional-precommit-linter
+        always_run: true
+        stages: [commit-msg]
+        args:
+          - --types=build,ci,docs,feat,fix,perf,refactor,style,test,chore
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.0
+    hooks:
+      - id: pyupgrade
+        args: [--py311-plus]
+        stages: [pre-commit]
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: Ruff Check
+        entry: ruff check --target-version py311 --output-format full --fix
+        language: system
+        types: [python]
+        stages: [pre-commit]
+
+      - id: ruff-format-check
+        name: Ruff Format Check
+        entry: ruff format --check
+        language: system
+        types: [python]
+        stages: [pre-commit]
+
+      - id: mypy
+        name: Mypy
+        entry: mypy .
+        language: system
+        pass_filenames: false
+        types: [python]
+        stages: [pre-push]
